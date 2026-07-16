@@ -1,175 +1,226 @@
+"use client";
 
-// 'use client';
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import LoadingState from "@/components/LoadingState";
+import ReportCard from "@/components/ReportCard";
+import { clearTeachbackStorage } from "@/lib/storage";
+import type { ChatMessage, UnderstandingReport } from "@/lib/types";
 
-// import { useEffect, useState } from 'react';
-// import { useRouter } from 'next/navigation';
-// import { UnderstandingReport } from '@/lib/types';
-// import LoadingState from '@/components/LoadingState';
-// import ChalkAnnotation from '@/components/ChalkAnnotation';
-// import ReportCard from '@/components/ReportCard';
-
-// export default function ReportPage() {
-//   const router = useRouter();
-//   const [report, setReport] = useState<UnderstandingReport | null>(null);
-//   const [error, setError] = useState<string | null>(null);
-
-//   useEffect(() => {
-//     const cachedReport = localStorage.getItem('teachback_report');
-//     if (cachedReport) {
-//       setReport(JSON.parse(cachedReport));
-//       return;
-//     }
-
-//     const topic = localStorage.getItem('teachback_topic');
-//     const transcriptStr = localStorage.getItem('teachback_transcript');
-
-//     if (!topic || !transcriptStr) {
-//       router.replace('/');
-//       return;
-//     }
-
-//     const transcript = JSON.parse(transcriptStr);
-
-//     const fetchReport = async () => {
-//       try {
-//         const res = await fetch('/api/report', {
-//           method: 'POST',
-//           headers: { 'Content-Type': 'application/json' },
-//           body: JSON.stringify({ topic, transcript }),
-//         });
-
-//         const data = await res.json();
-
-//         if (!res.ok) throw new Error(data.error || 'Failed to generate report.');
-
-//         localStorage.setItem('teachback_report', JSON.stringify(data));
-//         setReport(data);
-//       } catch (err: any) {
-//         setError(err.message || 'Something went wrong generating your report.');
-//       }
-//     };
-
-//     fetchReport();
-//   }, [router]);
-
-//   const handleReset = () => {
-//     localStorage.removeItem('teachback_topic');
-//     localStorage.removeItem('teachback_transcript');
-//     localStorage.removeItem('teachback_report');
-//     router.push('/');
-//   };
-
-//   if (error) {
-//     return (
-//       <main className="min-h-screen bg-board p-6 flex flex-col items-center justify-center">
-//         <div className="bg-paper p-8 rounded shadow-lg max-w-xl text-center space-y-6">
-//           <h2 className="font-display text-3xl text-chalkCoral">Oops, something snapped.</h2>
-//           <p className="font-body text-ink">{error}</p>
-//           <button onClick={handleReset} className="bg-chalkBlue text-board font-display px-6 py-2 rounded font-semibold focus:outline-none focus:ring-4 focus:ring-chalkBlue/50">
-//             Start Over
-//           </button>
-//         </div>
-//       </main>
-//     );
-//   }
-
-//   if (!report) {
-//     return (
-//       <main className="min-h-screen bg-board flex flex-col items-center justify-center space-y-6">
-//         <h2 className="font-annotation text-4xl text-chalkWhite">Grading your explanation...</h2>
-//         <LoadingState />
-//       </main>
-//     );
-//   }
-
-//   return (
-//     <main className="min-h-screen bg-board p-6 md:p-12 lg:p-24 flex justify-center">
-//       <div className="bg-paper w-full max-w-4xl rounded shadow-2xl p-8 md:p-16 flex flex-col gap-12 relative overflow-hidden">
-        
-//         {/* Header & Score */}
-//         <header className="border-b-2 border-boardPanel/10 pb-8 flex flex-col md:flex-row md:items-end justify-between gap-6">
-//           <div>
-//             <p className="font-annotation text-3xl text-boardPanel mb-2">Topic:</p>
-//             <h1 className="font-display text-4xl md:text-5xl text-ink leading-tight">{report.topic}</h1>
-//           </div>
-//           <div className="text-right">
-//             <p className="font-annotation text-2xl text-boardPanel mb-1">Clarity Score</p>
-//             <p className="font-display text-6xl md:text-7xl text-chalkBlue">{report.overallScore}<span className="text-3xl text-ink/40">/100</span></p>
-//           </div>
-//         </header>
-
-//         {/* Clear Points */}
-//         <section>
-//           <h2 className="font-display text-2xl text-ink mb-6">Explained Clearly</h2>
-//           <div className="space-y-6">
-//             {report.clearPoints.map((pt, i) => (
-//               <ReportCard 
-//                 key={i} 
-//                 title={pt.point} 
-//                 quote={<span className="border-b-4 border-chalkYellow">{pt.quote}</span>} 
-//               />
-//             ))}
-//           </div>
-//         </section>
-
-//         {/* Needs Review (Gaps) */}
-//         {report.gaps.length > 0 && (
-//           <section>
-//             <h2 className="font-display text-2xl text-ink mb-6">Needs Review</h2>
-//             <div className="space-y-8">
-//               {report.gaps.map((gap, i) => (
-//                 <ReportCard 
-//                   key={i} 
-//                   title={gap.issue} 
-//                   suggestion={gap.suggestion}
-//                   quote={<ChalkAnnotation>{gap.quote}</ChalkAnnotation>} 
-//                 />
-//               ))}
-//             </div>
-//           </section>
-//         )}
-
-//         {/* What to review next */}
-//         {report.reviewSuggestions.length > 0 && (
-//           <section className="bg-chalkWhite/30 p-6 rounded border border-boardPanel/10">
-//             <h2 className="font-display text-2xl text-ink mb-4">What to review next</h2>
-//             <ul className="space-y-3">
-//               {report.reviewSuggestions.map((sug, i) => (
-//                 <li key={i} className="font-body text-ink text-lg flex items-start">
-//                   <span className="text-chalkCoral mr-3 mt-1 font-bold">→</span> {sug}
-//                 </li>
-//               ))}
-//             </ul>
-//           </section>
-//         )}
-
-//         {/* Action */}
-//         <div className="pt-8 flex justify-center border-t-2 border-boardPanel/10">
-//           <button
-//             onClick={handleReset}
-//             className="bg-chalkBlue text-board font-display font-semibold text-xl md:text-2xl px-10 py-4 rounded shadow hover:bg-chalkBlue/90 hover:scale-[1.02] active:scale-95 transition-transform focus:outline-none focus:ring-4 focus:ring-chalkBlue/50"
-//           >
-//             Teach another topic
-//           </button>
-//         </div>
-//       </div>
-//     </main>
-//   );
-// } 
+function scoreTier(score: number): { label: string; className: string } {
+  if (score >= 80) {
+    return { label: "clear grasp", className: "bg-chalkYellow/20 text-ink" };
+  }
+  if (score >= 50) {
+    return { label: "solid, with gaps", className: "bg-chalkYellow/10 text-ink" };
+  }
+  return { label: "needs another pass", className: "bg-chalkCoral/15 text-ink" };
+}
 
 export default function ReportPage() {
+  const router = useRouter();
+  const [topic, setTopic] = useState<string | null>(null);
+  const [transcript, setTranscript] = useState<ChatMessage[] | null>(null);
+  const [report, setReport] = useState<UnderstandingReport | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  // Read required data on mount; bounce home if either is missing.
+  useEffect(() => {
+    const storedTopic = localStorage.getItem("teachback_topic");
+    const storedTranscript = localStorage.getItem("teachback_transcript");
+
+    if (!storedTopic || !storedTranscript) {
+      router.replace("/");
+      return;
+    }
+
+    try {
+      const parsed = JSON.parse(storedTranscript) as ChatMessage[];
+      if (!Array.isArray(parsed) || parsed.length === 0) {
+        router.replace("/");
+        return;
+      }
+      setTopic(storedTopic);
+      setTranscript(parsed);
+    } catch {
+      router.replace("/");
+    }
+  }, [router]);
+
+  // Use a cached report if we already generated one for this session,
+  // otherwise fetch a fresh one.
+  useEffect(() => {
+    if (!topic || !transcript) return;
+
+    const cached = localStorage.getItem("teachback_report");
+    if (cached) {
+      try {
+        setReport(JSON.parse(cached) as UnderstandingReport);
+        return;
+      } catch {
+        // fall through and regenerate
+      }
+    }
+
+    void generateReport(topic, transcript);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [topic, transcript]);
+
+  async function generateReport(topicValue: string, transcriptValue: ChatMessage[]) {
+    setLoading(true);
+    setError(null);
+    try {
+      const res = await fetch("/api/report", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ topic: topicValue, transcript: transcriptValue }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error ?? "Request failed.");
+      setReport(data as UnderstandingReport);
+      localStorage.setItem("teachback_report", JSON.stringify(data));
+    } catch (err) {
+      console.error("Report request failed:", err);
+      setError(
+        "Couldn't put the report together just now. Check your connection and try again."
+      );
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  function handleTeachAnother() {
+    clearTeachbackStorage();
+    router.push("/");
+  }
+
+  if (!topic || !transcript) {
+    return (
+      <main className="flex min-h-dvh items-center justify-center bg-board">
+        <p className="font-annotation text-2xl text-chalkWhite/60">
+          opening the board…
+        </p>
+      </main>
+    );
+  }
+
+  if (loading) {
+    return (
+      <main className="flex min-h-dvh flex-col items-center justify-center gap-4 bg-board px-6">
+        <LoadingState label="reading through the transcript…" />
+      </main>
+    );
+  }
+
+  if (error) {
+    return (
+      <main className="flex min-h-dvh flex-col items-center justify-center gap-5 bg-board px-6 text-center">
+        <p className="max-w-sm font-body text-chalkWhite/70">{error}</p>
+        <button
+          type="button"
+          onClick={() => void generateReport(topic, transcript)}
+          className="rounded-sm bg-chalkBlue px-6 py-3 font-body text-sm font-semibold text-board transition hover:brightness-110"
+        >
+          Try again
+        </button>
+      </main>
+    );
+  }
+
+  if (!report) return null;
+
+  const tier = scoreTier(report.overallScore);
+
   return (
-    <main className="flex min-h-dvh flex-col items-center justify-center bg-board px-6 text-center">
-      <span className="font-annotation text-3xl text-chalkYellow/90">
-        — one moment —
-      </span>
-      <h1 className="mt-4 font-display text-3xl font-semibold text-chalkWhite sm:text-4xl">
-        Report coming soon
-      </h1>
-      <p className="mt-4 max-w-sm font-body text-chalkWhite/60">
-        We&apos;re still building the part that grades the board. Check back
-        shortly.
-      </p>
+    <main className="chalk-grain relative flex min-h-dvh justify-center bg-board px-4 py-10 sm:px-6 sm:py-16">
+      <div className="relative w-full max-w-3xl rounded-lg border border-ink/5 bg-paper px-6 py-8 shadow-[0_20px_60px_-20px_rgba(0,0,0,0.6)] sm:px-12 sm:py-12">
+        <header className="border-b border-ink/10 pb-8">
+          <span className="font-annotation text-xl text-ink/50">
+            your teachback report
+          </span>
+          <h1 className="mt-1 font-display text-2xl font-semibold text-ink sm:text-3xl">
+            {report.topic || topic}
+          </h1>
+
+          <div className="mt-6 flex flex-wrap items-end gap-4">
+            <div className="flex items-baseline gap-1">
+              <span className="font-display text-6xl font-semibold text-ink sm:text-7xl">
+                {report.overallScore}
+              </span>
+              <span className="font-body text-lg text-ink/40">/ 100</span>
+            </div>
+            <span
+              className={`rounded-full px-3 py-1 font-body text-xs font-semibold uppercase tracking-wide ${tier.className}`}
+            >
+              {tier.label}
+            </span>
+          </div>
+        </header>
+
+        {report.clearPoints?.length > 0 && (
+          <section className="mt-10">
+            <h2 className="font-display text-xl font-semibold text-ink">
+              Explained clearly
+            </h2>
+            <div className="mt-4 flex flex-col gap-3">
+              {report.clearPoints.map((cp, i) => (
+                <ReportCard key={i} variant="clear" point={cp.point} quote={cp.quote} />
+              ))}
+            </div>
+          </section>
+        )}
+
+        {report.gaps?.length > 0 && (
+          <section className="mt-10">
+            <h2 className="font-display text-xl font-semibold text-ink">
+              Needs review
+            </h2>
+            <div className="mt-4 flex flex-col gap-3">
+              {report.gaps.map((gap, i) => (
+                <ReportCard
+                  key={i}
+                  variant="gap"
+                  issue={gap.issue}
+                  quote={gap.quote}
+                  suggestion={gap.suggestion}
+                />
+              ))}
+            </div>
+          </section>
+        )}
+
+        {report.reviewSuggestions?.length > 0 && (
+          <section className="mt-10">
+            <h2 className="font-display text-xl font-semibold text-ink">
+              What to review next
+            </h2>
+            <ul className="mt-4 flex flex-col gap-2.5">
+              {report.reviewSuggestions.map((suggestion, i) => (
+                <li
+                  key={i}
+                  className="flex gap-2.5 font-body text-[15px] leading-relaxed text-ink/80"
+                >
+                  <span aria-hidden="true" className="text-ink/30">
+                    –
+                  </span>
+                  {suggestion}
+                </li>
+              ))}
+            </ul>
+          </section>
+        )}
+
+        <div className="mt-12 flex justify-center border-t border-ink/10 pt-8">
+          <button
+            type="button"
+            onClick={handleTeachAnother}
+            className="rounded-sm bg-chalkBlue px-8 py-3.5 font-body text-sm font-semibold tracking-wide text-board transition hover:brightness-110 active:translate-y-px"
+          >
+            Teach another topic
+          </button>
+        </div>
+      </div>
     </main>
   );
 }

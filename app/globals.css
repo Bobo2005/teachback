@@ -27,6 +27,15 @@ body {
   color: #1e2a22;
 }
 
+/* Visible keyboard focus everywhere, regardless of any outline-none utility
+   an element may also carry — this rule is loaded after Tailwind's utility
+   layer so it wins on equal specificity. */
+:focus-visible {
+  outline: 2px solid #7fa8c9;
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
 /* subtle chalk grain, applied via a pseudo layer where needed */
 .chalk-grain {
   position: relative;

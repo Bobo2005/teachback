@@ -1,28 +1,38 @@
+import ChalkAnnotation from "@/components/ChalkAnnotation";
 
-import { ReactNode } from 'react';
+type ReportCardProps =
+  | { variant: "clear"; point: string; quote: string }
+  | { variant: "gap"; issue: string; quote: string; suggestion: string };
 
-interface ReportCardProps {
-  title: string;
-  quote: ReactNode;
-  suggestion?: string;
-}
-
-export default function ReportCard({ title, quote, suggestion }: ReportCardProps) {
-  return (
-    <div className="mb-6 flex flex-col md:flex-row gap-4 items-start border-l-4 border-boardPanel pl-4 py-2">
-      <div className="flex-1">
-        <p className="font-body text-ink font-semibold mb-2">{title}</p>
-        <blockquote className="font-body text-ink/80 italic text-lg leading-relaxed">
-          "{quote}"
-        </blockquote>
+export default function ReportCard(props: ReportCardProps) {
+  if (props.variant === "clear") {
+    return (
+      <div className="rounded-sm border-l-4 border-chalkYellow bg-ink/[0.03] px-5 py-4">
+        <p className="font-body text-[15px] font-semibold leading-snug text-ink">
+          {props.point}
+        </p>
+        <p className="mt-2 font-body text-sm leading-relaxed text-ink/70">
+          “
+          <span className="underline decoration-chalkYellow decoration-2 underline-offset-4">
+            {props.quote}
+          </span>
+          ”
+        </p>
       </div>
-      {suggestion && (
-        <div className="md:w-1/3 flex-shrink-0 mt-2 md:mt-0">
-          <p className="font-annotation text-2xl text-boardPanel -rotate-2 bg-chalkWhite/40 p-3 rounded shadow-sm">
-            {suggestion}
-          </p>
-        </div>
-      )}
+    );
+  }
+
+  return (
+    <div className="rounded-sm border-l-4 border-chalkCoral bg-ink/[0.03] px-5 py-4">
+      <p className="font-body text-[15px] font-semibold leading-snug text-ink">
+        {props.issue}
+      </p>
+      <p className="mt-3 font-body text-sm leading-relaxed text-ink/70">
+        “<ChalkAnnotation>{props.quote}</ChalkAnnotation>”
+      </p>
+      <p className="mt-2 font-annotation text-xl leading-snug text-ink/60">
+        ↳ {props.suggestion}
+      </p>
     </div>
   );
 }
