@@ -1,10 +1,13 @@
-
 export default function LoadingState() {
   return (
-    <div className="flex justify-start mb-8 items-center space-x-3 h-10 px-2 -rotate-1">
-      <div className="w-2.5 h-2.5 rounded-full bg-chalkWhite/60 animate-bounce" style={{ animationDelay: '0ms' }} />
-      <div className="w-2.5 h-2.5 rounded-full bg-chalkWhite/60 animate-bounce" style={{ animationDelay: '150ms' }} />
-      <div className="w-2.5 h-2.5 rounded-full bg-chalkWhite/60 animate-bounce" style={{ animationDelay: '300ms' }} />
+    <div
+      role="status"
+      aria-label="The student is thinking"
+      className="flex items-center gap-1.5 py-2 pl-1"
+    >
+      <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-chalkWhite/50 [animation-delay:-0.3s]" />
+      <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-chalkWhite/50 [animation-delay:-0.15s]" />
+      <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-chalkWhite/50" />
     </div>
   );
 }

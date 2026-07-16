@@ -1,45 +1,60 @@
+"use client";
 
-import { useState } from 'react';
+import { useState, type FormEvent, type KeyboardEvent } from "react";
 
-interface ChatInputProps {
+export default function ChatInput({
+  onSend,
+  disabled,
+}: {
   onSend: (text: string) => void;
-  disabled: boolean;
-}
+  disabled?: boolean;
+}) {
+  const [value, setValue] = useState("");
 
-export default function ChatInput({ onSend, disabled }: ChatInputProps) {
-  const [input, setInput] = useState('');
+  function submit() {
+    const trimmed = value.trim();
+    if (!trimmed || disabled) return;
+    onSend(trimmed);
+    setValue("");
+  }
 
-  const handleSubmit = (e: React.FormEvent) => {
+  function handleSubmit(e: FormEvent) {
     e.preventDefault();
-    if (input.trim() && !disabled) {
-      onSend(input.trim());
-      setInput('');
+    submit();
+  }
+
+  function handleKeyDown(e: KeyboardEvent<HTMLTextAreaElement>) {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      submit();
     }
-  };
+  }
 
   return (
-    <form 
-      onSubmit={handleSubmit} 
-      className="bg-boardPanel px-4 py-5 shadow-[0_-10px_30px_rgba(0,0,0,0.3)] z-10"
+    <form
+      onSubmit={handleSubmit}
+      className="flex items-end gap-3 rounded-t-md bg-boardPanel px-4 py-3 shadow-[0_-8px_20px_-12px_rgba(0,0,0,0.5)] sm:px-6 sm:py-4"
     >
-      <div className="max-w-4xl mx-auto flex gap-3">
-        <input
-          type="text"
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          disabled={disabled}
-          placeholder="Explain your thought..."
-          className="flex-1 bg-paper text-ink font-body text-lg rounded px-5 py-3 shadow-inner focus:outline-none focus:ring-4 focus:ring-chalkBlue/50 disabled:opacity-70 transition-all placeholder:text-ink/40"
-          autoComplete="off"
-        />
-        <button
-          type="submit"
-          disabled={disabled || !input.trim()}
-          className="bg-chalkBlue text-board font-display font-semibold text-lg px-8 py-3 rounded shadow hover:bg-chalkBlue/90 hover:scale-[1.02] active:scale-95 disabled:opacity-50 disabled:pointer-events-none transition-all"
-        >
-          Send
-        </button>
-      </div>
+      <label htmlFor="chat-input" className="sr-only">
+        Explain your topic
+      </label>
+      <textarea
+        id="chat-input"
+        rows={1}
+        value={value}
+        disabled={disabled}
+        onChange={(e) => setValue(e.target.value)}
+        onKeyDown={handleKeyDown}
+        placeholder="Keep explaining…"
+        className="max-h-32 min-h-[2.75rem] flex-1 resize-none rounded-sm bg-board/60 px-4 py-2.5 font-body text-base text-chalkWhite placeholder:text-chalkWhite/40 outline-none ring-1 ring-chalkWhite/10 transition focus:ring-chalkBlue/60 disabled:opacity-50"
+      />
+      <button
+        type="submit"
+        disabled={disabled || !value.trim()}
+        className="shrink-0 rounded-sm bg-chalkBlue px-5 py-2.5 font-body text-sm font-semibold tracking-wide text-board transition hover:brightness-110 active:translate-y-px disabled:cursor-not-allowed disabled:opacity-40"
+      >
+        Send
+      </button>
     </form>
   );
 }
