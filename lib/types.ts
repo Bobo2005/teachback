@@ -6,7 +6,16 @@ export interface ChatMessage {
 }
 
 export interface UnderstandingReport {
-  // TODO: Flesh out specific scoring, missing concepts, and feedback fields
-  id?: string;
-  topic?: string;
+  topic: string;
+  overallScore: number;
+  clearPoints: Array<{
+    point: string;
+    quote: string;
+  }>;
+  gaps: Array<{
+    issue: string;
+    quote: string;
+    suggestion: string;
+  }>;
+  reviewSuggestions: string[];
 }

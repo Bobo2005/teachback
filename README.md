@@ -1,0 +1,3 @@
+# Teachback
+
+Explain it. We'll catch what you missed. Teachback is a Next.js 14 application where users solidify their understanding of a topic by teaching it to an AI student (powered by Anthropic's Claude). To run the project locally: first, install dependencies with `npm install`. Next, create a `.env.local` file in the root directory and add your Anthropic API key (`ANTHROPIC_API_KEY=your_key_here`). Finally, start the development server using `npm run dev` and navigate to `http://localhost:3000` to begin your first teaching session.
