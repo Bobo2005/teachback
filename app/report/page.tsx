@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import LoadingState from "@/components/LoadingState";
 import ReportCard from "@/components/ReportCard";
 import { clearTeachbackStorage } from "@/lib/storage";
@@ -9,12 +10,12 @@ import type { ChatMessage, UnderstandingReport } from "@/lib/types";
 
 function scoreTier(score: number): { label: string; className: string } {
   if (score >= 80) {
-    return { label: "clear grasp", className: "bg-chalkYellow/20 text-ink" };
+    return { label: "clear grasp", className: "bg-brandSoft text-brandDark" };
   }
   if (score >= 50) {
-    return { label: "solid, with gaps", className: "bg-chalkYellow/10 text-ink" };
+    return { label: "solid, with gaps", className: "bg-canvas text-inkMuted" };
   }
-  return { label: "needs another pass", className: "bg-chalkCoral/15 text-ink" };
+  return { label: "needs another pass", className: "bg-redpenSoft text-redpen" };
 }
 
 export default function ReportPage() {
@@ -97,30 +98,28 @@ export default function ReportPage() {
 
   if (!topic || !transcript) {
     return (
-      <main className="flex min-h-dvh items-center justify-center bg-board">
-        <p className="font-annotation text-2xl text-chalkWhite/60">
-          opening the board…
-        </p>
+      <main className="flex min-h-dvh items-center justify-center bg-canvas">
+        <p className="font-body text-sm text-inkFaint">Loading…</p>
       </main>
     );
   }
 
   if (loading) {
     return (
-      <main className="flex min-h-dvh flex-col items-center justify-center gap-4 bg-board px-6">
-        <LoadingState label="reading through the transcript…" />
+      <main className="flex min-h-dvh flex-col items-center justify-center gap-4 bg-canvas px-6">
+        <LoadingState label="Reading through the transcript…" />
       </main>
     );
   }
 
   if (error) {
     return (
-      <main className="flex min-h-dvh flex-col items-center justify-center gap-5 bg-board px-6 text-center">
-        <p className="max-w-sm font-body text-chalkWhite/70">{error}</p>
+      <main className="flex min-h-dvh flex-col items-center justify-center gap-5 bg-canvas px-6 text-center">
+        <p className="max-w-sm font-body text-inkMuted">{error}</p>
         <button
           type="button"
           onClick={() => void generateReport(topic, transcript)}
-          className="rounded-sm bg-chalkBlue px-6 py-3 font-body text-sm font-semibold text-board transition hover:brightness-110"
+          className="rounded-lg bg-brand px-6 py-3 font-body text-sm font-semibold text-white transition hover:bg-brandDark"
         >
           Try again
         </button>
@@ -133,92 +132,101 @@ export default function ReportPage() {
   const tier = scoreTier(report.overallScore);
 
   return (
-    <main className="chalk-grain relative flex min-h-dvh justify-center bg-board px-4 py-10 sm:px-6 sm:py-16">
-      <div className="relative w-full max-w-3xl rounded-lg border border-ink/5 bg-paper px-6 py-8 shadow-[0_20px_60px_-20px_rgba(0,0,0,0.6)] sm:px-12 sm:py-12">
-        <header className="border-b border-ink/10 pb-8">
-          <span className="font-annotation text-xl text-ink/50">
-            your teachback report
-          </span>
-          <h1 className="mt-1 font-display text-2xl font-semibold text-ink sm:text-3xl">
-            {report.topic || topic}
-          </h1>
+    <main className="min-h-dvh bg-canvas px-4 py-10 sm:px-6 sm:py-16">
+      <div className="mx-auto w-full max-w-3xl">
+        <a
+          href="/"
+          className="font-body text-xs font-semibold text-inkFaint transition hover:text-brand"
+        >
+          ← Teachback
+        </a>
 
-          <div className="mt-6 flex flex-wrap items-end gap-4">
-            <div className="flex items-baseline gap-1">
-              <span className="font-display text-6xl font-semibold text-ink sm:text-7xl">
-                {report.overallScore}
-              </span>
-              <span className="font-body text-lg text-ink/40">/ 100</span>
-            </div>
-            <span
-              className={`rounded-full px-3 py-1 font-body text-xs font-semibold uppercase tracking-wide ${tier.className}`}
-            >
-              {tier.label}
+        <div className="mt-4 rounded-2xl border border-border bg-surface px-6 py-8 shadow-sm sm:px-12 sm:py-12">
+          <header className="border-b border-border pb-8">
+            <span className="font-body text-xs font-semibold uppercase tracking-widest text-inkFaint">
+              your teachback report
             </span>
+            <h1 className="mt-1 font-display text-2xl font-semibold text-ink sm:text-3xl">
+              {report.topic || topic}
+            </h1>
+
+            <div className="mt-6 flex flex-wrap items-end gap-4">
+              <div className="flex items-baseline gap-1">
+                <span className="font-display text-6xl font-semibold text-ink sm:text-7xl">
+                  {report.overallScore}
+                </span>
+                <span className="font-body text-lg text-inkFaint">/ 100</span>
+              </div>
+              <span
+                className={`rounded-full px-3 py-1 font-body text-xs font-semibold uppercase tracking-wide ${tier.className}`}
+              >
+                {tier.label}
+              </span>
+            </div>
+          </header>
+
+          {report.clearPoints?.length > 0 && (
+            <section className="mt-10">
+              <h2 className="font-display text-xl font-semibold text-ink">
+                Explained clearly
+              </h2>
+              <div className="mt-4 flex flex-col gap-3">
+                {report.clearPoints.map((cp, i) => (
+                  <ReportCard key={i} variant="clear" point={cp.point} quote={cp.quote} />
+                ))}
+              </div>
+            </section>
+          )}
+
+          {report.gaps?.length > 0 && (
+            <section className="mt-10">
+              <h2 className="font-display text-xl font-semibold text-ink">
+                Needs review
+              </h2>
+              <div className="mt-4 flex flex-col gap-3">
+                {report.gaps.map((gap, i) => (
+                  <ReportCard
+                    key={i}
+                    variant="gap"
+                    issue={gap.issue}
+                    quote={gap.quote}
+                    suggestion={gap.suggestion}
+                  />
+                ))}
+              </div>
+            </section>
+          )}
+
+          {report.reviewSuggestions?.length > 0 && (
+            <section className="mt-10">
+              <h2 className="font-display text-xl font-semibold text-ink">
+                What to review next
+              </h2>
+              <ul className="mt-4 flex flex-col gap-2.5">
+                {report.reviewSuggestions.map((suggestion, i) => (
+                  <li
+                    key={i}
+                    className="flex gap-2.5 font-body text-[15px] leading-relaxed text-inkMuted"
+                  >
+                    <span aria-hidden="true" className="text-inkFaint">
+                      –
+                    </span>
+                    {suggestion}
+                  </li>
+                ))}
+              </ul>
+            </section>
+          )}
+
+          <div className="mt-12 flex justify-center border-t border-border pt-8">
+            <button
+              type="button"
+              onClick={handleTeachAnother}
+              className="rounded-full bg-brand px-8 py-3.5 font-body text-sm font-semibold text-white transition hover:bg-brandDark active:translate-y-px"
+            >
+              Teach another topic
+            </button>
           </div>
-        </header>
-
-        {report.clearPoints?.length > 0 && (
-          <section className="mt-10">
-            <h2 className="font-display text-xl font-semibold text-ink">
-              Explained clearly
-            </h2>
-            <div className="mt-4 flex flex-col gap-3">
-              {report.clearPoints.map((cp, i) => (
-                <ReportCard key={i} variant="clear" point={cp.point} quote={cp.quote} />
-              ))}
-            </div>
-          </section>
-        )}
-
-        {report.gaps?.length > 0 && (
-          <section className="mt-10">
-            <h2 className="font-display text-xl font-semibold text-ink">
-              Needs review
-            </h2>
-            <div className="mt-4 flex flex-col gap-3">
-              {report.gaps.map((gap, i) => (
-                <ReportCard
-                  key={i}
-                  variant="gap"
-                  issue={gap.issue}
-                  quote={gap.quote}
-                  suggestion={gap.suggestion}
-                />
-              ))}
-            </div>
-          </section>
-        )}
-
-        {report.reviewSuggestions?.length > 0 && (
-          <section className="mt-10">
-            <h2 className="font-display text-xl font-semibold text-ink">
-              What to review next
-            </h2>
-            <ul className="mt-4 flex flex-col gap-2.5">
-              {report.reviewSuggestions.map((suggestion, i) => (
-                <li
-                  key={i}
-                  className="flex gap-2.5 font-body text-[15px] leading-relaxed text-ink/80"
-                >
-                  <span aria-hidden="true" className="text-ink/30">
-                    –
-                  </span>
-                  {suggestion}
-                </li>
-              ))}
-            </ul>
-          </section>
-        )}
-
-        <div className="mt-12 flex justify-center border-t border-ink/10 pt-8">
-          <button
-            type="button"
-            onClick={handleTeachAnother}
-            className="rounded-sm bg-chalkBlue px-8 py-3.5 font-body text-sm font-semibold tracking-wide text-board transition hover:brightness-110 active:translate-y-px"
-          >
-            Teach another topic
-          </button>
         </div>
       </div>
     </main>

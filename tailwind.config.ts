@@ -10,23 +10,23 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        board: "#1E2A22",
-        boardPanel: "#26332A",
-        paper: "#FAF8F2",
-        ink: "#232323",
-        chalkYellow: "#E8C468",
-        chalkCoral: "#E2887A",
-        chalkBlue: "#7FA8C9",
-        chalkWhite: "#F3F1E7",
+        canvas: "#FAFAF8",
+        surface: "#FFFFFF",
+        surfaceMuted: "#F4F3EE",
+        border: "#E6E4DC",
+        ink: "#14171B",
+        inkMuted: "#5B5F66",
+        inkFaint: "#9498A0",
+        brand: "#0E7C6B",
+        brandDark: "#0A5C4F",
+        brandSoft: "#E4F3EF",
+        redpen: "#D64545",
+        redpenSoft: "#FBE9E7",
       },
       fontFamily: {
         display: ["var(--font-display)"],
         body: ["var(--font-body)"],
-        annotation: ["var(--font-annotation)"],
-      },
-      backgroundImage: {
-        "chalk-noise":
-          "radial-gradient(circle at 20% 20%, rgba(243,241,231,0.03), transparent 40%), radial-gradient(circle at 80% 60%, rgba(243,241,231,0.025), transparent 45%)",
+        mono: ["var(--font-mono)"],
       },
     },
   },

@@ -33,7 +33,7 @@ export default function ChatInput({
   return (
     <form
       onSubmit={handleSubmit}
-      className="flex items-end gap-3 rounded-t-md bg-boardPanel px-4 py-3 shadow-[0_-8px_20px_-12px_rgba(0,0,0,0.5)] sm:px-6 sm:py-4"
+      className="flex items-end gap-3 border-t border-border bg-surface px-4 py-3 sm:px-6 sm:py-4"
     >
       <label htmlFor="chat-input" className="sr-only">
         Explain your topic
@@ -46,12 +46,12 @@ export default function ChatInput({
         onChange={(e) => setValue(e.target.value)}
         onKeyDown={handleKeyDown}
         placeholder="Keep explaining…"
-        className="max-h-32 min-h-[2.75rem] flex-1 resize-none rounded-sm bg-board/60 px-4 py-2.5 font-body text-base text-chalkWhite placeholder:text-chalkWhite/40 outline-none ring-1 ring-chalkWhite/10 transition focus:ring-chalkBlue/60 disabled:opacity-50"
+        className="max-h-32 min-h-[2.75rem] flex-1 resize-none rounded-lg border border-border bg-canvas px-4 py-2.5 font-body text-[15px] text-ink placeholder:text-inkFaint outline-none transition focus:border-brand disabled:opacity-50"
       />
       <button
         type="submit"
         disabled={disabled || !value.trim()}
-        className="shrink-0 rounded-sm bg-chalkBlue px-5 py-2.5 font-body text-sm font-semibold tracking-wide text-board transition hover:brightness-110 active:translate-y-px disabled:cursor-not-allowed disabled:opacity-40"
+        className="shrink-0 rounded-lg bg-brand px-5 py-2.5 font-body text-sm font-semibold text-white transition hover:bg-brandDark active:translate-y-px disabled:cursor-not-allowed disabled:opacity-40"
       >
         Send
       </button>

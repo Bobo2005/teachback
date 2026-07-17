@@ -2,10 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --board: #1e2a22;
-}
-
 * {
   box-sizing: border-box;
 }
@@ -15,40 +11,22 @@ html {
 }
 
 body {
-  background-color: #1e2a22;
-  background-image:
-    radial-gradient(ellipse at top left, rgba(243, 241, 231, 0.035), transparent 55%),
-    radial-gradient(ellipse at bottom right, rgba(243, 241, 231, 0.025), transparent 50%);
+  background-color: #fafaf8;
   min-height: 100dvh;
 }
 
 ::selection {
-  background-color: #e8c468;
-  color: #1e2a22;
+  background-color: #e4f3ef;
+  color: #0a5c4f;
 }
 
 /* Visible keyboard focus everywhere, regardless of any outline-none utility
    an element may also carry — this rule is loaded after Tailwind's utility
    layer so it wins on equal specificity. */
 :focus-visible {
-  outline: 2px solid #7fa8c9;
+  outline: 2px solid #0e7c6b;
   outline-offset: 3px;
   border-radius: 2px;
-}
-
-/* subtle chalk grain, applied via a pseudo layer where needed */
-.chalk-grain {
-  position: relative;
-}
-
-.chalk-grain::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  opacity: 0.5;
-  mix-blend-mode: overlay;
-  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='120' height='120'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix type='saturate' values='0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)' opacity='0.4'/></svg>");
 }
 
 @layer utilities {

@@ -1,11 +1,10 @@
 import type { Metadata } from "next";
-import { Fraunces, Inter, Caveat } from "next/font/google";
+import { Space_Grotesk, Inter, IBM_Plex_Mono } from "next/font/google";
 import "./globals.css";
 
-const fraunces = Fraunces({
+const spaceGrotesk = Space_Grotesk({
   subsets: ["latin"],
-  weight: ["600", "700"],
-  style: ["normal", "italic"],
+  weight: ["500", "600", "700"],
   variable: "--font-display",
   display: "swap",
 });
@@ -17,10 +16,10 @@ const inter = Inter({
   display: "swap",
 });
 
-const caveat = Caveat({
+const plexMono = IBM_Plex_Mono({
   subsets: ["latin"],
-  weight: ["500", "600", "700"],
-  variable: "--font-annotation",
+  weight: ["500", "600"],
+  variable: "--font-mono",
   display: "swap",
 });
 
@@ -37,7 +36,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${fraunces.variable} ${inter.variable} ${caveat.variable} font-body bg-board text-chalkWhite antialiased`}
+        className={`${spaceGrotesk.variable} ${inter.variable} ${plexMono.variable} font-body bg-canvas text-ink antialiased`}
       >
         {children}
       </body>
