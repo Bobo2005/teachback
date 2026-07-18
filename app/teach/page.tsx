@@ -73,6 +73,10 @@ export default function TeachPage() {
   }
 
   function handleDone() {
+    // Clear any report cached from a previous session — this transcript is
+    // new, so /report needs to generate a fresh one rather than reusing
+    // whatever's left over in localStorage.
+    localStorage.removeItem("teachback_report");
     localStorage.setItem("teachback_transcript", JSON.stringify(history));
     router.push("/report");
   }

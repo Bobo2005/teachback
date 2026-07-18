@@ -123,10 +123,14 @@ function Hero() {
   const [topic, setTopic] = useState("");
   const router = useRouter();
 
-  function handleSubmit(e: FormEvent<HTMLFormElement>) {
+ function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const trimmed = topic.trim();
     if (!trimmed) return;
+    // Starting a fresh session — clear out anything left over from a
+    // previous one so /report doesn't show stale, cached results.
+    localStorage.removeItem("teachback_transcript");
+    localStorage.removeItem("teachback_report");
     localStorage.setItem("teachback_topic", trimmed);
     router.push("/teach");
   }
