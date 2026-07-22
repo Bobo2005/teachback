@@ -12,3 +12,15 @@ The "explain it to an AI" pattern isn't new — there's a whole crowded field of
 - **They ask for a signup before you can try it. Teachback doesn't.** No account, no paywall — straight from the landing page into the conversation.
 
 None of this makes the underlying idea original — the Feynman technique is decades old, and "teach an AI" is an established pattern. What we focused on instead was making the one loop that actually matters (explain → get genuinely questioned → see the receipts) as tight and honest as possible, rather than surrounding it with features that dilute it.
+
+
+## What sets it apart
+
+The "explain it to an AI" pattern isn't new — there's a crowded field of Feynman-technique study apps doing some version of explain → get feedback. Researching that space surfaced a consistent gap: most of them stop at *identifying* what's wrong and never make you prove you fixed it, and none of them advertise catching self-contradiction across a conversation. Two features address that directly:
+
+- **Contradiction detection.** The report doesn't just flag vague or incomplete explanations — it has a dedicated section that catches you asserting something, then later in the same session saying something that directly conflicts with it. Both quotes are shown side by side, verbatim, so it's not a vague "be more consistent" note but the exact two sentences that don't add up.
+- **Practice quiz per gap.** Every gap in the report comes with a "Test yourself" button that generates a short, CBT-style multiple-choice quiz targeting *that specific* weak point — not the topic in general. Answer all three questions and the score is saved into the report itself, so the loop doesn't end at "here's what you got wrong" — it closes with "and here's proof you fixed it."
+
+## Setup
+
+Install dependencies with `npm install`, then create a `.env.local` file in the project root (or copy the placeholder one already there) and set `ANTHROPIC_API_KEY=your-key-here` to a real key from the [Anthropic Console](https://console.anthropic.com). Once that's in place, run `npm run dev` and open [http://localhost:3000](http://localhost:3000) to try it out.
